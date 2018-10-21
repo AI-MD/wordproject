@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.project.word.dao.TestResultDao">
+
+<select id="getresultViewList" resultType="com.project.word.vo.ResultView" >
+	select  thIdx,thType, thTestNum, thTestDate, thWflag, stNum,  stName, groupName, resIdx,  wrongCount , totalCount, wrongList,rightList,wrongFlag
+	from resultview  order by thIdx asc
+</select>
+
+<select id="getresultViewListwithStudent" parameterType="String" resultType="com.project.word.vo.ResultView" >
+	select  thIdx,thType, thTestNum, thTestDate, thWflag, stNum,  stName, groupName, resIdx,  wrongCount , totalCount, wrongList,rightList,wrongFlag
+	from resultview  where stNum=#{stNum} order by thIdx desc
+</select>
+
+</mapper>
+
+

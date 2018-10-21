@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.project.word.dao.WordDao">
+
+
+<select id="getWordList"   resultType="com.project.word.vo.Word">
+	select wo_idx as woIdx, wo_no as woNo, wo_word as woWord,wo_meaning as woMeaning
+		from word where wo_flag=1 order by wo_no
+</select>
+
+
+<insert id="insertWordExcel" parameterType="com.project.word.vo.Word">
+INSERT INTO word
+(
+	wo_no,
+	wo_word,
+	wo_meaning,
+	wo_flag
+)
+VALUES
+<foreach collection="list" item="item" separator=" , ">
+(
+  #{item.woNo}
+, #{item.woWord}
+, #{item.woMeaning}
+, 1
+)
+</foreach>
+</insert>
+
+
+<select id="getWordTest"  parameterType="hashmap" resultType="com.project.word.vo.Word">
+	SELECT t1.wo_idx as woIdx,t1.wo_no as woNo,  t1.wo_word as woWord, split_str(t1.woMeaning, ',', t1.random) woMeaning
+  		FROM ( select wo_idx, wo_no, wo_word,  wo_meaning as woMeaning , GET_RANDOM(wo_meaning,',') as random from word 
+		where  wo_no between  #{start} and #{end} and wo_flag=1 order by rand() limit #{cnt}) AS t1 
+</select>
+
+<select id="getWrongWordTest" parameterType="hashmap" resultType="com.project.word.vo.Word">
+SELECT t1.wo_idx as woIdx,t1.wo_no as woNo,  t1.wo_word as woWord, split_str(t1.woMeaning, ',', t1.random) woMeaning
+  		FROM ( select wo_idx, wo_no, wo_word,  wo_meaning as woMeaning , GET_RANDOM(wo_meaning,',') as random from word 
+		where  wo_idx in
+		
+		<foreach collection="arr_wrongIdx" item="item"  separator=" , " open="(" close=")">
+	  		#{item}
+		</foreach>
+
+ and wo_flag=1 order by rand() limit #{cnt}) AS t1 
+
+</select>
+
+<select id="getWordOptionTest"   resultType="com.project.word.vo.Word">
+ SELECT t1.wo_idx as woIdx, t1.wo_no as woNo , split_str(t1.woMeaning, ',', t1.random) woMeaning
+  FROM ( select wo_idx, wo_no,wo_meaning as woMeaning , GET_RANDOM(wo_meaning,',') as random from word 
+			where  wo_flag=1 order by wo_no ) AS t1 
+</select>
+
+<select id="getWordTextTest"  parameterType="hashmap" resultType="com.project.word.vo.Word">
+select wo_idx as woIdx, wo_no as woNo, wo_word as woWord,wo_meaning as woMeaning
+		from word where  wo_no between  #{start} and #{end} and wo_flag=1 order by rand() limit #{cnt}
+</select>
+
+<select id="getWrongWordTextTest"  parameterType="hashmap" resultType="com.project.word.vo.Word">
+select wo_idx as woIdx, wo_no as woNo, wo_word as woWord,wo_meaning as woMeaning
+		from word where   wo_idx in
+		<foreach collection="arr_wrongIdx" item="item"  separator=" , " open="(" close=")">
+	  		#{item}
+		</foreach>
+		 and wo_flag=1 order by rand() limit #{cnt}
+</select>
+
+
+<select id="getWordTViewList"  parameterType="hashmap" resultType="com.project.word.vo.Word">
+select wo_idx as woIdx, wo_no as woNo, wo_word as woWord,wo_meaning as woMeaning
+		from word where  wo_no between  #{start} and #{end} and wo_flag=1
+</select>
+
+<select id="getMaxWordNo"   resultType="Integer">
+	select max(wo_no) from word
+</select>
+
+<select id="getTotalNumberOfWords"   resultType="Integer">
+	select count(1) from word;
+</select>
+
+
+
+<select id="getWordbyWrongIdx"  parameterType="Integer" resultType="com.project.word.vo.WordView">
+	select wo_idx as woIdx, wo_word as woWord
+		from word where wo_flag=1 and wo_idx= #{idx} order by wo_no
+</select>
+
+</mapper>
+
+

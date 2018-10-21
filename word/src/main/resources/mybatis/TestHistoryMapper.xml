@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.project.word.dao.TestHistoryDao">
+
+<select id="testNumcheck" parameterType="hashmap" resultType="Integer" >
+	select count(*) from test_history where st_idx=#{stIdx} and th_testdate like CONCAT('%', #{thTestdate}, '%')
+</select>
+
+<insert id="insertTestHistory" parameterType="com.project.word.vo.TestHistory">
+	insert into test_history(th_type,th_testnum,th_testdate,st_idx,res_idx ,th_wflag) values(#{thType},#{thTestnum},now(),#{stIdx},#{resIdx},#{thWflag})
+</insert>
+
+<delete id="deleteTestHistory" parameterType="hashmap" >
+delete from test_history where th_idx in
+<foreach collection="arr_resIdx" item="item"  separator=" , " open="(" close=")">
+	  #{item}
+</foreach>
+</delete>
+
+<select id= "getWrongwordjoinlist" parameterType="Integer" resultType="com.project.word.vo.TestResultwithHistory" >
+	SELECT th_idx as thIdx, test_history.res_idx as resIdx, st_idx as stIdx, res_wlist as resWlist,res_wflag as resWflag FROM word.test_history ,word.test_result 
+	where test_history.res_idx=test_result.res_idx and st_idx=#{stIdx}
+</select>
+	
+	
+	
+
+
+
+</mapper>
+
+

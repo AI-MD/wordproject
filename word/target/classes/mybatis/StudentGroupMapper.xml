@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.project.word.dao.StudentGroupDao">
+
+<select id="getStudentGroupList"   resultType="com.project.word.vo.StudentGroup">
+		select sg_idx as sgIdx,sg_name as sgName from student_group 
+		where sg_idx > 1
+</select>
+
+<insert id="studentGroupInsert" parameterType="com.project.word.vo.StudentGroup">
+		insert  into student_group(sg_name)  values(#{sgName})
+</insert>
+</mapper>
+
+

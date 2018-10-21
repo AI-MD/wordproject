@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.project.word.dao.TestResultDao">
+
+<insert id="insertTestResult" useGeneratedKeys="true" keyProperty="resIdx" parameterType="com.project.word.vo.TestResult">
+  insert into test_result ( res_wrong, res_total,res_wlist,res_rlist,res_wflag )
+  values ( #{resWrong}, #{resTotal} ,#{resWlist},#{resRlist},#{resWflag})
+</insert>
+
+<!-- 미완성 -->
+<update id="updateWrongnote" parameterType="hashmap"  >
+	update test_result set res_wflag=#{resWflag} where res_idx=#{resIdx}
+</update>
+
+<select id="getTestResultList" parameterType="hashmap" resultType="com.project.word.vo.TestResult">
+	select res_idx as resIdx, res_wflag as resWflag from test_result where res_idx in
+	
+	<foreach collection="resIdxarr" item="item"  separator=" , " open="(" close=")">
+	  		#{item}
+	</foreach>
+</select>
+
+</mapper>
+
+

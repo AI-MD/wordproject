@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.project.word.dao.StudentDao">
+
+<resultMap id="studentResultMap" type="com.project.word.vo.Student">
+  <id property="stIdx" column="st_idx" />
+  <result property="stName" column="st_name"/>
+  <result property="stNum" column="st_num"/>
+  <result property="sgIdx" column="sg_idx"/>
+  <result property="sgName" column="sg_name"/>
+  <result property="stRegdate" column="st_regdate"/>
+</resultMap>
+
+<select id="getStudentList"  resultMap="studentResultMap">
+		SELECT
+		    a.st_idx
+		    , a.st_name
+		    , a.st_num
+		    , a.st_regdate
+		    , a.sg_idx
+		    , b.sg_name
+		FROM
+		    student a
+		LEFT JOIN
+		    student_group b
+		ON
+		    a.sg_idx = b.sg_idx
+		    
+		where a.sg_idx = 1    
+</select>
+
+<select id="getGroupStudentList"  parameterType="Integer" resultMap="studentResultMap">
+		SELECT
+		    a.st_idx
+		    , a.st_name
+		    , a.st_num
+		    , a.st_regdate
+		    , a.sg_idx
+		    , b.sg_name
+		FROM
+		    student a
+		LEFT JOIN
+		    student_group b
+		ON
+		    a.sg_idx = b.sg_idx
+		    
+		where a.sg_idx = #{sgIdx}    
+</select>
+
+<select id="findBySTCheck" parameterType="com.project.word.vo.Student"  resultType="Integer">
+		select count(*) from student where st_name=#{stName} and st_num=#{stNum}
+</select>
+
+
+<select id="findIdxByNum" parameterType="String"  resultType="Integer">
+		select st_idx as stIdx from student where st_num=#{stNum}
+</select>
+
+<select id="findByNum" parameterType="String"  resultMap="studentResultMap">
+		select st_idx
+		    , st_name
+		    , st_num
+		    , st_regdate
+		    , sg_idx
+		     from student where st_num=#{stNum}
+</select>
+
+<insert id="insertStudentExcel" parameterType="com.project.word.vo.Student">
+INSERT INTO student
+(
+	st_name,
+	st_num,
+	sg_idx,
+	st_regdate
+)
+VALUES
+<foreach collection="list" item="item" separator=" , ">
+(
+  #{item.stName}
+, #{item.stNum}
+, 1
+, now()
+)
+</foreach>
+</insert>
+
+
+
+
+
+<update id="groupUpdate" parameterType="hashmap">
+	update student set sg_idx = #{sgIdx} where 
+                 st_idx in
+                <foreach collection="arr_stIdx" item="item" index="index" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+</update>
+
+<delete id="studentDelete" parameterType="hashmap">
+	delete from student where 
+                 st_idx in
+                <foreach collection="arr_stIdx" item="item" index="index" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+</delete>
+</mapper>
+
+
